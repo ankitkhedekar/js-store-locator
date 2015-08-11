@@ -1,7 +1,7 @@
 
 google.maps.event.addDomListener(window, 'load', function() {
 
-	/*** Initialize map ***/
+	/*** Initialize map and related views***/
 	var map = new google.maps.Map(document.getElementById('map-canvas'), {
 		center: new google.maps.LatLng(37.7521831, -122.444471),
 		zoom: 12,
@@ -20,8 +20,9 @@ google.maps.event.addDomListener(window, 'load', function() {
 		createLocations(trucks);
 	});
 
+	//creates the list to display all stores
 	function createLocations(){
-		locations = $(".locations");
+		locations = $("#allStores");
 		locations.text("");
 		for(var i=0; i<trucks.length; i++){
 			truck = trucks[i];
@@ -38,7 +39,7 @@ google.maps.event.addDomListener(window, 'load', function() {
 		});
 	}
 
-	/*** overide the create marker provided by library ***/
+	/*** function to create marker on map ***/
   	function createMarker(truck) {
 		var marker =  new google.maps.Marker({
 			position: new google.maps.LatLng(truck.Latitude, truck.Longitude),
@@ -54,6 +55,7 @@ google.maps.event.addDomListener(window, 'load', function() {
 		//console.log(markers);
 	};
 
+	//on click action for each marker
 	function markerClick(marker){
 		map.setZoom(16);
 		map.setCenter(marker.getPosition());
@@ -61,20 +63,23 @@ google.maps.event.addDomListener(window, 'load', function() {
 		infoWindow.open(map, marker);
 	}
 
+	//when new location is searched
 	google.maps.event.addListener(autocomplete, 'place_changed', function() {
 		infoWindow.close();
 		var place = autocomplete.getPlace();
 		/*map.setCenter(place.geometry.location);
 		map.setZoom(17);*/
-		findClosestMarker(place.geometry.location);
+		if(typeof place != 'undefined'){
+			findClosestMarker(place.geometry.location);
+		}
+		
 	});
 
-	/***  Testing function to fit nearest marker on map ***/
-
-
+	/***  Testing data ***/
 	/*var oakland = new google.maps.LatLng(37.7919615,-122.2287941);
 	setTimeout(function(){ findClosestMarker(markers, oakland); }, 3000);*/
 
+	//finding the closest marker for the location searched
 	function findClosestMarker(location) {
 	    var distances = [];
 	    var closest = -1;
@@ -93,6 +98,25 @@ google.maps.event.addDomListener(window, 'load', function() {
 	    infoWindow.setContent(markers[closest].getTitle());
 		infoWindow.open(map, markers[closest]);
 	    //console.log(markers[closest].title);
+
+	    
+	    closestDistance = (distances[closest]/1000).toFixed(2);
+	    searchLocString = '<span><a href="#" id="closeSearch">close</a></span><div class="truckLoc" data-index="'+closest+'"><h3>'+trucks[closest].Applicant+'</h3>'+trucks[closest].Address+'</br>'+closestDistance+' kms</div>';
+	    $('#nearestStore').html(searchLocString);
+	    $('#nearestStore').show();
+	    $('#allStores').hide();
+
+
+	    //when the search is closed again displace all trucks
+	    $('#closeSearch').on('click', function(e){
+	    	e.preventDefault();
+	    	$('#nearestStore').hide();
+	    	$('#allStores').show();
+	    	$('#search').val("");
+	    });
+
 	}
+
+	
 
 });

@@ -16,12 +16,20 @@
 		<div class="container">
 			<div id="panel">
 				<input id="search" placeholder="Enter location to find nearest store">
-				<div class="locations">
+				<div id="allStores" class="locations">
 					<!--div class="truckLoc">
 						<h3>My truck</h3>
 						this street, that avenue</br>
 						2miles
 					</div-->
+				</div>
+				<div id="nearestStore" style="display:none;" class="locations">
+					<span><a href="#" id="closeSearch">close</a></span>
+					<div class="truckLoc">
+						<h3>My truck</h3>
+						this street, that avenue</br>
+						2miles
+					</div>
 				</div>
 			</div>
 			<div id="map-canvas">

@@ -27,3 +27,7 @@
 .truckLoc h3{
   margin-bottom: 0;
 }
+
+#nearestStore span{
+  float: right;
+}
