@@ -1,12 +1,14 @@
-FoodtruckDS.prototype = new storeLocator.StaticDataFeed();
-FoodtruckDS.prototype.constructor = FoodtruckDS;
 
-function FoodtruckDS(trucks) {
+function FoodtruckDS(callback) {
   that = this;
   $.get('data.csv', function(data) {
   	that.stores = that.parse_(data);
-    that.setStores(that.stores);
+    callback();
   });
+}
+
+FoodtruckDS.prototype.getStores = function(){
+  return this.stores;
 }
 
 FoodtruckDS.prototype.parse_ = function(csv) {
@@ -19,14 +21,7 @@ FoodtruckDS.prototype.parse_ = function(csv) {
     //console.log(row.Status);
 
     if(row.Status == 'APPROVED'){
-    	var position = new google.maps.LatLng(row.Latitude, row.Longitude);
-
-	    var store = new storeLocator.Store(row.locationid, position, null, {
-	      title: row.Applicant,
-	      address: row.Address
-	    });
-
-	    stores.push(store);
+	    stores.push(row);
     }
     
   }
